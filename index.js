@@ -2,7 +2,10 @@ const express = require("express");
 const productsJSON = require("./products.json");
 const categoriesJSON = require("./categories.json");
 const couponListJSON = require("./couponList.json");
+const cors = require("cors");
 const app = express();
+
+app.use(cors());
 
 function getProductsByCategoryId(products, categoryId) {
   return categoryId ? products.filter((item) => item.category.id === Number(categoryId)) : products;
