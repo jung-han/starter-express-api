@@ -8,33 +8,50 @@ const app = express();
 app.use(cors());
 
 function getProductsByCategoryId(products, categoryId) {
-  return categoryId ? products.filter((item) => item.category.id === Number(categoryId)) : products;
+  return categoryId
+    ? products.filter((item) => item.category.id === Number(categoryId))
+    : products;
 }
 
 function getProductsByPrice(products, price) {
-  return price ? products.filter((item) => item.price === Number(price)) : products;
+  return price
+    ? products.filter((item) => item.price === Number(price))
+    : products;
 }
 
 function getProductsByPriceRange({ products, price_min, price_max }) {
   const minValue = price_min ? Number(price_min) : Number.MIN_SAFE_INTEGER;
   const maxValue = price_min ? Number(price_max) : Number.MAX_SAFE_INTEGER;
 
-  return products.filter((item) => item.price >= minValue && item.price <= maxValue);
+  return products.filter(
+    (item) => item.price >= minValue && item.price <= maxValue
+  );
 }
 
 function getProductsByTitle(products, title) {
-  return title ? products.filter((item) => item.title.includes(title)) : products;
+  return title
+    ? products.filter((item) => item.title.includes(title))
+    : products;
 }
 
 function getFilteredProductsByQuery(products, query) {
-  const productsFilteredByCategoryId = getProductsByCategoryId(products, query.categoryId);
+  const productsFilteredByCategoryId = getProductsByCategoryId(
+    products,
+    query.categoryId
+  );
   const productsFilteredByPriceRange = getProductsByPriceRange({
     products: productsFilteredByCategoryId,
     price_min: query.price_min,
     price_max: query.price_max,
   });
-  const productsFilteredByPrice = getProductsByPrice(productsFilteredByPriceRange, query.price);
-  const productsFilteredByTitle = getProductsByTitle(productsFilteredByPrice, query.title);
+  const productsFilteredByPrice = getProductsByPrice(
+    productsFilteredByPriceRange,
+    query.price
+  );
+  const productsFilteredByTitle = getProductsByTitle(
+    productsFilteredByPrice,
+    query.title
+  );
 
   return productsFilteredByTitle;
 }
@@ -42,7 +59,8 @@ function getFilteredProductsByQuery(products, query) {
 function getSliceIndex(products, query) {
   const offset = query.offset ? Number(query.offset) : 0;
   const limit = query.limit ? Number(query.limit) : products.length;
-  const endIndex = offset + limit > products.length ? products.length : offset + limit;
+  const endIndex =
+    offset + limit > products.length ? products.length : offset + limit;
 
   return {
     startIndex: offset,
@@ -55,7 +73,10 @@ app.get("/products", (req, res) => {
   const { startIndex, endIndex } = getSliceIndex(filteredProducts, req.query);
   const lastPage = endIndex === filteredProducts.length;
 
-  res.send({ products: filteredProducts.slice(startIndex, endIndex), lastPage });
+  res.send({
+    products: filteredProducts.slice(startIndex, endIndex),
+    lastPage,
+  });
 });
 
 app.get("/products/:id", (req, res) => {
@@ -75,5 +96,18 @@ app.get("/categories", (_, res) => {
 app.get("/couponList", (_, res) => {
   res.send(couponListJSON);
 });
+
+// app.get("/zvzcvz", (_, res) => {
+//   const z = productsJSON.map((item) => {
+//     const shuffled = item.images.sort(() => 0.5 - Math.random());
+
+//     return {
+//       ...item,
+//       images: shuffled.slice(0, 3),
+//     };
+//   });
+
+//   res.send(z);
+// });
 
 app.listen(process.env.PORT || 3000);
