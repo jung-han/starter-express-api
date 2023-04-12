@@ -7,6 +7,14 @@ const app = express();
 
 app.use(cors());
 
+function wait(amount = 0) {
+  return new Promise((resolve) => setTimeout(resolve, amount));
+}
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 function getProductsByCategoryId(products, categoryId) {
   return categoryId
     ? products.filter((item) => item.category.id === Number(categoryId))
@@ -97,17 +105,15 @@ app.get("/couponList", (_, res) => {
   res.send(couponListJSON);
 });
 
-// app.get("/zvzcvz", (_, res) => {
-//   const z = productsJSON.map((item) => {
-//     const shuffled = item.images.sort(() => 0.5 - Math.random());
+app.get("/purchase", async (req, res) => {
+  const item = req.body;
+  const waitTime = getRandomArbitrary(300, 5000);
 
-//     return {
-//       ...item,
-//       images: shuffled.slice(0, 3),
-//     };
-//   });
+  // random time wait
+  await wait(waitTime);
 
-//   res.send(z);
-// });
+  // random result return
+  res.send(String(waitTime));
+});
 
 app.listen(process.env.PORT || 3000);
