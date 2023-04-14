@@ -15,8 +15,8 @@ function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-// 1/20 확률로 실패
-const result = [...new Array(19).fill(true), false];
+// 1/10 확률로 실패
+const result = [...new Array(9).fill(true), false];
 function getResult() {
   return result[Math.floor(Math.random() * result.length)];
 }
@@ -96,8 +96,13 @@ app.get("/couponList", (_, res) => {
 app.post("/purchase", async (_, res) => {
   const waitTime = getRandomArbitrary(100, 5000);
   await wait(waitTime);
+  const result = getResult();
 
-  res.send(getResult());
+  if (result) {
+    res.send(true);
+  } else {
+    res.status(500).send("internal error");
+  }
 });
 
 app.listen(process.env.PORT || 3000);
