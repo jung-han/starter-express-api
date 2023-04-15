@@ -31,7 +31,7 @@ function getProductsByPrice(products, price) {
 
 function getProductsByPriceRange({ products, price_min, price_max }) {
   const minValue = price_min ? Number(price_min) : Number.MIN_SAFE_INTEGER;
-  const maxValue = price_min ? Number(price_max) : Number.MAX_SAFE_INTEGER;
+  const maxValue = price_max ? Number(price_max) : Number.MAX_SAFE_INTEGER;
 
   return products.filter((item) => item.price >= minValue && item.price <= maxValue);
 }
